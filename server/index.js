@@ -4,7 +4,7 @@ const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const { addUser, removeUser, getUser, getUsersInRoom } = require("./users");
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 9009;
 
 io.on("connect", onConnection);
 
