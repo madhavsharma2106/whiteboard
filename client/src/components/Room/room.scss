@@ -1,0 +1,12 @@
+.room {
+  .info-bar {
+    height: 80px;
+    background-color: grey;
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .whiteboard {
+    border: 5px solid red;
+  }
+}
