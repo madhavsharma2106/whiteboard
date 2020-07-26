@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext } from "react";
+import React, { useState, useEffect, createContext, useCallback } from "react";
 import queryString from "query-string";
 import { withRouter } from "react-router";
 import io from "socket.io-client";
@@ -20,6 +20,16 @@ function Room(props) {
   const [room, setRoom] = useState("");
   const [roomData, setRoomData] = useState();
   const [incomingStroke, setIncomingStroke] = useState();
+  const [parentNode, setParentNode] = useState(null);
+
+  /**
+   * Setting parent node here so that whiteboard can get the dimensions
+   */
+  const div = useCallback((node) => {
+    if (node !== null) {
+      setParentNode(node);
+    }
+  }, []);
 
   useEffect(() => {
     const { username, room } = queryString.parse(props.location.search);
@@ -55,12 +65,15 @@ function Room(props) {
     <WhiteBoardContext.Provider value={defaultWhiteBoardSettings}>
       <div className="room">
         <InfoBar username={username} room={room} roomData={roomData} />
-        <WhiteBoard
-          socket={socket}
-          username={username}
-          room={room}
-          incomingStroke={incomingStroke}
-        />
+        <div className="whiteboard-wrapper" ref={div}>
+          <WhiteBoard
+            socket={socket}
+            username={username}
+            room={room}
+            incomingStroke={incomingStroke}
+            parentNode={parentNode}
+          />
+        </div>
       </div>
     </WhiteBoardContext.Provider>
   );

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useContext } from "react";
 import { socketEvents } from "../../../utils";
 import { WhiteBoardContext } from "../Room";
 
-function WhiteBoard({ socket, username, room, incomingStroke }) {
+function WhiteBoard({ socket, username, room, incomingStroke, parentNode }) {
   const [isDrawing, setIsDrawing] = useState(false);
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
@@ -12,16 +12,16 @@ function WhiteBoard({ socket, username, room, incomingStroke }) {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    canvas.width = window.innerWidth * 2;
-    canvas.height = window.innerHeight * 2;
-    canvas.style.width = `${window.innerWidth}px`;
-    canvas.style.height = `${window.innerHeight}px`;
+    canvas.width = parentNode && parentNode.getBoundingClientRect().width;
+    canvas.height = parentNode && parentNode.getBoundingClientRect().height;
+    // canvas.style.width = `${canvas.width}px`;
+    // canvas.style.height = `${canvas.height}px`;
     const context = canvas.getContext("2d");
-    context.scale(2, 2);
+    // context.scale(2, 2);
     context.lineCap = whiteBoardContext.lineCap;
     context.lineWidth = whiteBoardContext.lineWidth;
     contextRef.current = context;
-  }, []);
+  }, [parentNode]);
 
   useEffect(() => {
     if (incomingStroke) {
