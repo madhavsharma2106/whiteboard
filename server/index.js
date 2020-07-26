@@ -1,11 +1,22 @@
 const express = require("express");
 const path = require("path");
 const app = express();
+const cors = require("cors");
 const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const { addUser, removeUser, getUsersInRoom } = require("./users");
 
 const port = process.env.PORT || 9009;
+
+app.use(cors());
+
+// Serving Static files
+app.use(express.static(path.join(__dirname, "./build")));
+
+// Handle React routing, return all requests to React app
+app.get("*", function (req, res) {
+  res.sendFile(path.join(__dirname, "./build", "index.html"));
+});
 
 io.on("connect", onConnection);
 
@@ -91,11 +102,3 @@ function onConnection(socket) {
 }
 
 http.listen(port, () => console.log("listening on port " + port));
-
-// Serving Static files
-app.use(express.static(path.join(__dirname, "./build")));
-
-// Handle React routing, return all requests to React app
-app.get("*", function (req, res) {
-  res.sendFile(path.join(__dirname, "./build", "index.html"));
-});
