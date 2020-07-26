@@ -13,6 +13,7 @@ const defaultWhiteBoardSettings = {
   lineWidth: 5,
   lineCap: "round",
 };
+
 export const WhiteBoardContext = createContext(defaultWhiteBoardSettings);
 
 function Room(props) {
@@ -41,8 +42,7 @@ function Room(props) {
     // Joining the user to the room
     socket.emit(socketEvents.JOIN, { name: username, room }, (error) => {
       if (error) {
-        console.log(error);
-        alert("Something went wrong");
+        alert(error);
       }
     });
   }, [props.location.search]);

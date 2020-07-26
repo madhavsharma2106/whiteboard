@@ -6,10 +6,26 @@ $info-bar-height: 80px;
     background-color: grey;
     display: flex;
     justify-content: space-around;
+    align-items: center;
+    .users-in-room {
+      display: flex;
+      .users {
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 40px;
+        width: 40px;
+        background-color: yellow;
+        border: 2px solid red;
+        border-radius: 50%;
+        margin-right: -10px;
+      }
+    }
   }
+}
 
-  .whiteboard-wrapper {
-    width: 100%;
-    height: calc(100vh - #{$info-bar-height});
-  }
+.whiteboard-wrapper {
+  width: 100%;
+  height: calc(100vh - #{$info-bar-height});
 }
