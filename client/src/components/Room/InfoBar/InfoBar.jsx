@@ -1,6 +1,6 @@
 import React from "react";
-import ColorPalette from "../ColorPalette/ColorPalette";
-import UsersInRoom from "../UsersInRoom/UsersInRoom";
+import ColorPalette from "./ColorPalette/ColorPalette";
+import UsersInRoom from "./UsersInRoom/UsersInRoom";
 
 function InfoBar({ roomData, username, room }) {
   return (

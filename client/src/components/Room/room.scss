@@ -1,5 +1,10 @@
 $info-bar-height: 80px;
 
+@mixin square($side) {
+  height: $side;
+  width: $side;
+}
+
 .room {
   .info-bar {
     height: $info-bar-height;
@@ -7,19 +12,29 @@ $info-bar-height: 80px;
     display: flex;
     justify-content: space-around;
     align-items: center;
+
     .users-in-room {
       display: flex;
+
       .users {
         cursor: pointer;
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 40px;
-        width: 40px;
+        @include square(40px);
         background-color: yellow;
         border: 2px solid red;
         border-radius: 50%;
         margin-right: -10px;
+      }
+    }
+
+    .color-pallete {
+      display: flex;
+      flex-wrap: wrap;
+      width: 150px;
+      .color {
+        @include square(30px);
       }
     }
   }
