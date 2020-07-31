@@ -2,7 +2,7 @@ import React, { useState, useEffect, createContext, useCallback } from "react";
 import queryString from "query-string";
 import { withRouter } from "react-router";
 import io from "socket.io-client";
-import { API_ENDPOINT, socketEvents } from "../../utils";
+import { API_ENDPOINT, socketEvents, RoomTypes } from "../../utils";
 import "./room.scss";
 import InfoBar from "./InfoBar/InfoBar";
 import WhiteBoard from "./WhiteBoard/WhiteBoard";
@@ -40,11 +40,25 @@ function Room(props) {
     socket = io(API_ENDPOINT);
 
     // Joining the user to the room
-    socket.emit(socketEvents.JOIN, { name: username, room }, (error) => {
-      if (error) {
-        alert(error);
+    socket.emit(
+      socketEvents.JOIN,
+      { name: username, room, roomType: RoomTypes.whiteBoardRoom },
+      (error) => {
+        if (error) {
+          alert(error);
+        }
       }
-    });
+    );
+
+    const removeUserFromRoom = () => {
+      socket.emit(socketEvents.CUSTOMDISCONNECT, {
+        roomType: RoomTypes.whiteBoardRoom,
+      });
+    };
+    window.addEventListener("beforeunload", removeUserFromRoom);
+    return () => {
+      window.removeEventListener("beforeunload", removeUserFromRoom);
+    };
   }, [props.location.search]);
 
   useEffect(() => {
@@ -63,7 +77,7 @@ function Room(props) {
 
   return (
     <WhiteBoardContext.Provider value={defaultWhiteBoardSettings}>
-      <div className="room">
+      <div className="whiteboard">
         <InfoBar username={username} room={room} roomData={roomData} />
         <div className="whiteboard-wrapper" ref={div}>
           <WhiteBoard

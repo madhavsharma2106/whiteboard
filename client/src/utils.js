@@ -1,4 +1,4 @@
-export const API_ENDPOINT = "http://157.245.101.36:9009/";
+export const API_ENDPOINT = "localhost:9009/";
 
 export const socketEvents = {
   JOIN: "join",
@@ -6,4 +6,10 @@ export const socketEvents = {
   ROOMDATA: "roomData",
   MESSAGE: "message",
   DRAWING: "drawing",
+  CUSTOMDISCONNECT: "customDisconnect",
+};
+
+export const RoomTypes = {
+  whiteBoardRoom: "whiteBoardRoom",
+  codeShareRoom: "codeShareRoom",
 };

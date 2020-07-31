@@ -4,11 +4,11 @@ import { withRouter } from "react-router";
 function EnterRoom(props) {
   const [username, setUsername] = useState("");
   const [room, setRoom] = useState("");
-
+  const [roomType, setRoomType] = useState("whiteBoard");
   const handleSubmit = (event) => {
     event.preventDefault();
     if (username && room)
-      props.history.push(`/room?username=${username}&room=${room}`);
+      props.history.push(`/${roomType}Room?username=${username}&room=${room}`);
   };
 
   return (
@@ -23,6 +23,10 @@ function EnterRoom(props) {
         placeholder="Enter your room"
         onChange={(e) => setRoom(e.target.value)}
       />
+      <select onChange={(e) => setRoomType(e.target.value)}>
+        <option value="whiteBoard">White Board</option>
+        <option value="codeShare">Code Share</option>
+      </select>
       <button type="submit">Lets Go</button>
     </form>
   );

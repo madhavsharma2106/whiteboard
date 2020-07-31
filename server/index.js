@@ -28,8 +28,8 @@ function onConnection(socket) {
    * 3. Add user to room
    * 4. Send message to everyone that the user has joined.
    */
-  const onJoin = ({ name, room }, callback) => {
-    const { error, user } = addUser({ id: socket.id, name, room });
+  const onJoin = ({ name, room, roomType }, callback) => {
+    const { error, user } = addUser({ id: socket.id, name, room, roomType });
 
     // Sending the error.
     if (error) return callback(error);
@@ -52,7 +52,7 @@ function onConnection(socket) {
     // Sending the users in the Room
     io.to(user.room).emit("roomData", {
       room: user.room,
-      users: getUsersInRoom(user.room),
+      users: getUsersInRoom(user.room, roomType),
     });
 
     // Need to send an empty message in the portal. Dont really know why yet.
@@ -67,9 +67,9 @@ function onConnection(socket) {
    * 3. Emit a message to room with rooom data.
    */
 
-  const onDisconnect = () => {
+  const onDisconnect = ({ roomType }) => {
     // Remove user from the room using his socket ID
-    const user = removeUser(socket.id);
+    const user = removeUser(socket.id, roomType);
 
     if (user) {
       // Send message to the entier room
@@ -98,7 +98,8 @@ function onConnection(socket) {
 
   socket.on("join", onJoin);
   socket.on("drawing", onDrawing);
-  socket.on("disconnect", onDisconnect);
+  // socket.on("disconnect", onDisconnect);
+  socket.on("customDisconnect", onDisconnect);
 }
 
 http.listen(port, () => console.log("listening on port " + port));
