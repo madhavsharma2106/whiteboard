@@ -32,12 +32,10 @@ const addUser = ({ id, name, room, roomType }) => {
   } else if (roomType === RoomTypes.codeShareRoom) {
     codeShareUsers.push(user);
   }
-
   return { user };
 };
 
 const removeUser = (id, roomType) => {
-  console.log(roomType);
   if (roomType === RoomTypes.whiteBoardRoom) {
     const index = whiteBoardUsers.findIndex((user) => user.id === id);
     if (index !== -1) return whiteBoardUsers.splice(index, 1)[0];

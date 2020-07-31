@@ -29,7 +29,12 @@ function onConnection(socket) {
    * 4. Send message to everyone that the user has joined.
    */
   const onJoin = ({ name, room, roomType }, callback) => {
-    const { error, user } = addUser({ id: socket.id, name, room, roomType });
+    const { error, user } = addUser({
+      id: socket.id,
+      name,
+      room: `${room}-${roomType}`,
+      roomType,
+    });
 
     // Sending the error.
     if (error) return callback(error);
