@@ -5,6 +5,7 @@ import io from "socket.io-client";
 import { API_ENDPOINT, socketEvents, RoomTypes } from "../../utils";
 import InfoBar from "./InfoBar/InfoBar";
 import "./room.scss";
+import Monaco from "./monaco/Monaco";
 
 let socket;
 function Room(props) {
@@ -54,7 +55,7 @@ function Room(props) {
   return (
     <div className="code-share">
       <InfoBar username={username} room={room} roomData={roomData} />
-      Code Share
+      <Monaco />
     </div>
   );
 }
