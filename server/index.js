@@ -65,14 +65,15 @@ function onConnection(socket) {
 
     // Onboarding procedure for a codeshare sesssion
     if (roomType === RoomTypes.codeShareRoom) {
-      io.emit("incomingCodeChange", {
-        type: "initialValue",
-        payload: initialValue.split("\n"),
-      });
-
+      // Setup a room if the room does not exist
       if (!codeShareRooms[buildRoomName(room)]) {
         codeShareRooms[buildRoomName(room)] = initialValue.split("\n");
       }
+
+      io.emit("incomingCodeChange", {
+        type: "initialValue",
+        payload: codeShareRooms[buildRoomName(room)],
+      });
     }
 
     // Need to send an empty message in the portal. Dont really know why yet.
