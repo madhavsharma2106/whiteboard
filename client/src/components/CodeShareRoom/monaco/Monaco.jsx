@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ControlledEditor } from "@monaco-editor/react";
 import { Editor } from "./Editor";
-import { joinValue } from "../../../utils";
+import { joinValue, socketEvents } from "../../../utils";
 
 const editorConfig = {
   options: {
@@ -30,15 +30,15 @@ function Monaco({ socket, initialValue, room, username }) {
   };
 
   const initialiseSocketListeners = () => {
-    socket.on("valueChange", ({ lineNumber, updatedLine }) => {
-      console.log({ lineNumber, updatedLine });
+    socket.on(socketEvents.INCOMING_CODE_CHANGE, ({ type, payload }) => {
+      console.log({ type, payload });
     });
   };
 
   useEffect(() => {
     if (editorRef && isEditorReady) {
       initialiseMonacoListeners();
-      // initialiseSocketListeners();
+      initialiseSocketListeners();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editorRef, isEditorReady]);

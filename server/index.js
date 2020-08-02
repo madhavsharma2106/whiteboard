@@ -35,7 +35,7 @@ function onConnection(socket) {
     const { error, user } = addUser({
       id: socket.id,
       name,
-      room: buildRoomName(room, roomType),
+      room,
       roomType,
     });
 
@@ -65,7 +65,7 @@ function onConnection(socket) {
 
     // Onboarding procedure for a codeshare sesssion
     if (roomType === RoomTypes.codeShareRoom) {
-      io.emit("codeChange", {
+      io.emit("incomingCodeChange", {
         type: "initialValue",
         payload: initialValue.split("\n"),
       });
@@ -119,23 +119,23 @@ function onConnection(socket) {
     socket.broadcast.to(data.room).emit("drawing", data);
   };
 
-  const onValueChange = (data) => {
-    let { lineNumber, text, room, column } = data;
-    data.room = buildRoomName(room);
+  const onIncomingCodeChange = (data) => {
+    let { lineNumber, text, room, column } = data.payload;
+    data.payload.room = buildRoomName(room);
 
     // Adding text to the editor
-    addTextToCode(data);
-
-    socket.broadcast.to(room).emit("valueChange", {
-      lineNumber,
-      // updatedLine,
-    });
+    switch (data.type) {
+      case "addition": {
+        addTextToCode(data.payload, socket);
+        break;
+      }
+    }
   };
 
   socket.on("join", onJoin);
   socket.on("drawing", onDrawing);
   socket.on("disconnect", onDisconnect);
-  socket.on("valueChange", onValueChange);
+  socket.on("registerCodeChange", onIncomingCodeChange);
 }
 
 http.listen(port, () => console.log("listening on port " + port));

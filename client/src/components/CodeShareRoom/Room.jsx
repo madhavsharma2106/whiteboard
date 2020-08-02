@@ -43,8 +43,7 @@ function Room(props) {
       setRoomData(data);
     });
 
-    socket.on(socketEvents.CODE_CHANGE, (data) => {
-      console.log(data);
+    socket.on(socketEvents.INCOMING_CODE_CHANGE, (data) => {
       const { type, payload } = data;
       if (type === "initialValue") setInitialValue(payload);
     });

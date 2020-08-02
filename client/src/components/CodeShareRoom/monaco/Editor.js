@@ -1,4 +1,5 @@
 import { Socket } from "socket.io-client";
+import { socketEvents } from "../../../utils";
 
 export class Editor {
   constructor(editor, socket, room, username) {
@@ -20,7 +21,7 @@ export class Editor {
    */
 
   emitEvent(eventName, data) {
-    console.log(`${eventName} event fired with data ${JSON.stringify(data)}`);
+    console.log(eventName, data);
     this.socket.emit(eventName, data);
   }
 
@@ -46,14 +47,16 @@ export class Editor {
       console.log(event);
       const { changes } = event;
 
-      const data = {
+      const payload = {
         lineNumber: changes[0].range.startLineNumber - 1,
         column: changes[0].range.startColumn - 1,
         text: changes[0].text,
         room: this.room,
       };
 
-      this.emitEvent("valueChange", data);
+      const type = "addition";
+
+      this.emitEvent(socketEvents.REGISTER_CODE_CHANGE, { type, payload });
     });
   }
 

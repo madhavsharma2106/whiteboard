@@ -1,4 +1,4 @@
-const { RoomTypes } = require("./utils");
+const { RoomTypes, buildRoomName } = require("./utils");
 
 const whiteBoardUsers = [];
 const codeShareUsers = [];
@@ -6,6 +6,8 @@ const codeShareUsers = [];
 const addUser = ({ id, name, room, roomType }) => {
   name = name.trim().toLowerCase();
   room = room.trim().toLowerCase();
+
+  room = buildRoomName(room, roomType);
 
   let existingUser;
 
@@ -29,6 +31,8 @@ const addUser = ({ id, name, room, roomType }) => {
   } else if (roomType === RoomTypes.codeShareRoom) {
     codeShareUsers.push(user);
   }
+
+  console.log(user);
   return { user };
 };
 

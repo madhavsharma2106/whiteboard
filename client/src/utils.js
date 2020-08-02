@@ -6,7 +6,8 @@ export const socketEvents = {
   ROOMDATA: "roomData",
   MESSAGE: "message",
   DRAWING: "drawing",
-  CODE_CHANGE: "codeChange",
+  INCOMING_CODE_CHANGE: "incomingCodeChange",
+  REGISTER_CODE_CHANGE: "registerCodeChange",
 };
 
 export const RoomTypes = {
