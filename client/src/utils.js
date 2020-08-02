@@ -1,5 +1,5 @@
-export const API_ENDPOINT = "157.245.101.36:9009/";
-// export const API_ENDPOINT = "localhost:9009/";
+// export const API_ENDPOINT = "157.245.101.36:9009/";
+export const API_ENDPOINT = "localhost:9009/";
 
 export const socketEvents = {
   JOIN: "join",
@@ -9,6 +9,8 @@ export const socketEvents = {
   DRAWING: "drawing",
   INCOMING_CODE_CHANGE: "incomingCodeChange",
   REGISTER_CODE_CHANGE: "registerCodeChange",
+  REGISTER_CURSOR_POSITION_CHANGE: "registerCursorPositionChange",
+  INCOMING_CURSOR_CHANGE: "incomingCursorChange",
 };
 
 export const RoomTypes = {

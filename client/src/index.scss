@@ -10,3 +10,21 @@ body {
 .container {
   max-width: 1170px;
 }
+
+.blue-cursor {
+  background: red;
+  width: 2px !important;
+  position: relative;
+}
+
+.blue-cursor::after {
+  content: "Madhav";
+  position: absolute;
+  font-size: 12px;
+  top: -12px;
+  left: 0;
+  padding: 2px 5px;
+  background-color: red;
+  color: white;
+  z-index: 1;
+}

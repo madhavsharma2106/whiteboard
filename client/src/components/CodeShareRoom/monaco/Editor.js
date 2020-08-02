@@ -5,6 +5,7 @@ import {
 } from "../../../utils";
 
 export class Editor {
+  decorations = [];
   constructor(editor, socket, room, username) {
     this.editor = editor.current;
     this.socket = socket;
@@ -39,8 +40,17 @@ export class Editor {
   /**
    * Listens to change in cursor position
    */
-  onChangeCursorPosition(cb = this._defaultLogger) {
-    this.editor.onDidChangeCursorPosition(cb);
+  onChangeCursorPosition() {
+    this.editor.onDidChangeCursorPosition((event) => {
+      const type = "cursorPositionChange";
+      const payload = event.position;
+      this.emitEvent(socketEvents.REGISTER_CURSOR_POSITION_CHANGE, {
+        type,
+        payload,
+        name: this.username,
+        room: this.room,
+      });
+    });
   }
 
   /**
@@ -133,33 +143,24 @@ export class Editor {
   /**
    * Adding new cursors
    */
-  addNewCursor() {
+  addNewCursor(data) {
+    const { name, payload } = data;
+    const { column, lineNumber } = payload;
+
     const position = [
       {
         range: {
-          endColumn: 4,
-          startColumn: 4,
-          endLineNumber: 2,
-          startLineNumber: 2,
-        },
-        options: {
-          className: "blue-cursor",
-        },
-      },
-      {
-        range: {
-          endColumn: 5,
-          startColumn: 5,
-          endLineNumber: 3,
-          startLineNumber: 3,
+          endColumn: column,
+          startColumn: column,
+          endLineNumber: lineNumber,
+          startLineNumber: lineNumber,
         },
         options: {
           className: "blue-cursor",
         },
       },
     ];
-
-    this.editor.deltaDecorations([], position);
+    this.decorations = this.editor.deltaDecorations(this.decorations, position);
   }
 
   /**

@@ -121,7 +121,7 @@ function onConnection(socket) {
     socket.broadcast.to(data.room).emit("drawing", data);
   };
 
-  const onIncomingCodeChange = (data) => {
+  const registerCodeChange = (data) => {
     let { lineNumber, text, room, column } = data.payload;
     data.payload.room = buildRoomName(room);
 
@@ -134,10 +134,17 @@ function onConnection(socket) {
     }
   };
 
+  const onChangeCursorPosition = ({ payload, name, room }) => {
+    socket.broadcast
+      .to(buildRoomName(room))
+      .emit("incomingCursorChange", { payload, name });
+  };
+
   socket.on("join", onJoin);
   socket.on("drawing", onDrawing);
   socket.on("disconnect", onDisconnect);
-  socket.on("registerCodeChange", onIncomingCodeChange);
+  socket.on("registerCodeChange", registerCodeChange);
+  socket.on("registerCursorPositionChange", onChangeCursorPosition);
 }
 
 http.listen(port, () => console.log("listening on port " + port));

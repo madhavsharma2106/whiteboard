@@ -27,11 +27,15 @@ function Monaco({ socket, initialValue, room, username }) {
 
   const initialiseMonacoListeners = () => {
     editor.onValueChange();
+    editor.onChangeCursorPosition();
   };
 
   const initialiseSocketListeners = () => {
     socket.on(socketEvents.INCOMING_CODE_CHANGE, (data) =>
       editor.handleIncomingCodeChangeEvent(data)
+    );
+    socket.on(socketEvents.INCOMING_CURSOR_CHANGE, (data) =>
+      editor.addNewCursor(data)
     );
   };
 
