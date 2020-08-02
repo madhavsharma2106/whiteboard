@@ -1,4 +1,5 @@
-export const API_ENDPOINT = "localhost:9009/";
+export const API_ENDPOINT = "157.245.101.36:9009/";
+// export const API_ENDPOINT = "localhost:9009/";
 
 export const socketEvents = {
   JOIN: "join",
