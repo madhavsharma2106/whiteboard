@@ -47,6 +47,7 @@ export class Editor {
    * Listens to value change in the editor
    */
   onValueChange() {
+    console.log(this.isFirstRender);
     if (this.isFirstRender) this.isFirstRender = false;
     this.editor.onDidChangeModelContent((event) => {
       console.log(event);
@@ -54,6 +55,7 @@ export class Editor {
       let fullCode;
       // No emitting the changes if the event is not triggered by the user
       if (changes[0].forceMoveMarkers) return;
+      if (fullCode === changes[0].text) return;
 
       if (checkIfCodeChangeIsAffectingMulitpleLines(changes[0])) {
         fullCode = this.getValue();
