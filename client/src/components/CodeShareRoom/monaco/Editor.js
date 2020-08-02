@@ -7,6 +7,7 @@ export class Editor {
     this.socket = socket;
     this.room = room;
     this.username = username;
+    this.isFirstRender = true;
   }
 
   _defaultLogger(value) {
@@ -43,6 +44,7 @@ export class Editor {
    * Listens to value change in the editor
    */
   onValueChange() {
+    if (this.isFirstRender) this.isFirstRender = false;
     this.editor.onDidChangeModelContent((event) => {
       console.log(event);
       const { changes } = event;

@@ -1,4 +1,5 @@
 const { RoomTypes, buildRoomName } = require("./utils");
+const { codeShareRooms } = require("./codeShare");
 
 const whiteBoardUsers = [];
 const codeShareUsers = [];
@@ -54,8 +55,13 @@ const getUser = (id) => users.find((user) => user.id === id);
 const getUsersInRoom = (room, roomType) => {
   if (roomType === RoomTypes.whiteBoardRoom)
     return whiteBoardUsers.filter((user) => user.room === room);
-  if (roomType === RoomTypes.codeShareRoom)
-    return codeShareUsers.filter((user) => user.room === room);
+  if (roomType === RoomTypes.codeShareRoom) {
+    const updatedUsersList = codeShareUsers.filter(
+      (user) => user.room === room
+    );
+    if (updatedUsersList.length === 0) delete codeShareRooms[room];
+    return updatedUsersList;
+  }
 };
 
 module.exports = { addUser, removeUser, getUser, getUsersInRoom };

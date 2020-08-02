@@ -66,6 +66,7 @@ function onConnection(socket) {
     // Onboarding procedure for a codeshare sesssion
     if (roomType === RoomTypes.codeShareRoom) {
       // Setup a room if the room does not exist
+      console.log(codeShareRooms[buildRoomName(room)]);
       if (!codeShareRooms[buildRoomName(room)]) {
         codeShareRooms[buildRoomName(room)] = initialValue.split("\n");
       }
