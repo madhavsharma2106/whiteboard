@@ -139,7 +139,6 @@ function onConnection(socket) {
   socket.on("join", onJoin);
   socket.on("drawing", onDrawing);
   socket.on("disconnect", onDisconnect);
-  socket.on("customDisconnect", onDisconnect);
 }
 
 http.listen(port, () => console.log("listening on port " + port));

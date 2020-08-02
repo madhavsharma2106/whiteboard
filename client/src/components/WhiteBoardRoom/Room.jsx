@@ -49,16 +49,6 @@ function Room(props) {
         }
       }
     );
-
-    const removeUserFromRoom = () => {
-      socket.emit(socketEvents.CUSTOMDISCONNECT, {
-        roomType: RoomTypes.whiteBoardRoom,
-      });
-    };
-    window.addEventListener("beforeunload", removeUserFromRoom);
-    return () => {
-      window.removeEventListener("beforeunload", removeUserFromRoom);
-    };
   }, [props.location.search]);
 
   useEffect(() => {

@@ -6,7 +6,6 @@ export const socketEvents = {
   ROOMDATA: "roomData",
   MESSAGE: "message",
   DRAWING: "drawing",
-  CUSTOMDISCONNECT: "customDisconnect",
   CODE_CHANGE: "codeChange",
 };
 
