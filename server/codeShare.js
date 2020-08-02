@@ -1,6 +1,11 @@
+const { splitCodeIntoArrayByNextLines } = require("./utils");
+
 const codeShareRooms = {};
 
-const checkIfCodeHasMulitpleLines = (text) => text.includes("\n");
+const multilineChange = (data) => {
+  const { lineNumber, text, room, column, range, fullCode } = data;
+  codeShareRooms[room] = splitCodeIntoArrayByNextLines(fullCode);
+};
 
 const singleLineChange = (data) => {
   const { lineNumber, text, room, column, range } = data;
@@ -10,9 +15,13 @@ const singleLineChange = (data) => {
 };
 
 const addTextToCode = (data, socket) => {
-  const { lineNumber, text, room, column, range } = data;
+  const { lineNumber, text, room, column, range, fullCode } = data;
   if (!codeShareRooms[room]) return;
-  singleLineChange(data);
+  if (fullCode) {
+    multilineChange(data);
+  } else {
+    singleLineChange(data);
+  }
 
   socket.broadcast.to(room).emit("incomingCodeChange", {
     type: "addition",

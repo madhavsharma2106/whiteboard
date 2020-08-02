@@ -1,5 +1,8 @@
 import { Socket } from "socket.io-client";
-import { socketEvents } from "../../../utils";
+import {
+  socketEvents,
+  checkIfCodeChangeIsAffectingMulitpleLines,
+} from "../../../utils";
 
 export class Editor {
   constructor(editor, socket, room, username) {
@@ -48,9 +51,13 @@ export class Editor {
     this.editor.onDidChangeModelContent((event) => {
       console.log(event);
       const { changes } = event;
-
+      let fullCode;
       // No emitting the changes if the event is not triggered by the user
       if (changes[0].forceMoveMarkers) return;
+
+      if (checkIfCodeChangeIsAffectingMulitpleLines(changes[0])) {
+        fullCode = this.getValue();
+      }
 
       const payload = {
         lineNumber: changes[0].range.startLineNumber - 1,
@@ -58,6 +65,7 @@ export class Editor {
         text: changes[0].text,
         room: this.room,
         range: changes[0].range,
+        fullCode,
       };
 
       const type = "addition";
@@ -72,7 +80,6 @@ export class Editor {
    * @return {string} current value of the editor
    */
   getValue() {
-    console.log(this.editor.getValue());
     return this.editor.getValue();
   }
 

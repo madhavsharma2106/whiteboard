@@ -22,6 +22,8 @@ ReactDOM.render(
 serviceWorker.unregister();
 `;
 
+const splitCodeIntoArrayByNextLines = (code) => code.split("\n");
+
 const splitValue = initialValue.split("\n");
 
 const buildRoomName = (room, roomType = RoomTypes.codeShareRoom) =>
@@ -32,4 +34,5 @@ module.exports = {
   initialValue,
   splitValue,
   buildRoomName,
+  splitCodeIntoArrayByNextLines,
 };

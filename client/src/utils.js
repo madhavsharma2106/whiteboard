@@ -16,3 +16,7 @@ export const RoomTypes = {
 };
 
 export const joinValue = (value) => value.join("\n");
+export const checkIfCodeChangeIsAffectingMulitpleLines = ({ text, range }) => {
+  if (text.includes("\n")) return true;
+  if (range.endColumn !== range.startColumn) return true;
+};
