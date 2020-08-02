@@ -47,11 +47,15 @@ export class Editor {
       console.log(event);
       const { changes } = event;
 
+      // No emitting the changes if the event is not triggered by the user
+      if (changes[0].forceMoveMarkers) return;
+
       const payload = {
         lineNumber: changes[0].range.startLineNumber - 1,
         column: changes[0].range.startColumn - 1,
         text: changes[0].text,
         room: this.room,
+        range: changes[0].range,
       };
 
       const type = "addition";
@@ -154,5 +158,34 @@ export class Editor {
     this.editor.trigger("keyboard", "type", {
       text,
     });
+  }
+
+  insertTextAtPosition(payload) {
+    const { text, range } = payload;
+
+    const identifier = { major: 1, minor: 1 };
+    const forceMoveMarkers = "true";
+
+    this.editor.executeEdits("my-source", [
+      {
+        identifier,
+        range,
+        text,
+        forceMoveMarkers,
+      },
+    ]);
+  }
+
+  _handleCodeAddition(payload) {
+    this.insertTextAtPosition(payload);
+  }
+
+  handleIncomingCodeChangeEvent(event) {
+    const { type, payload } = event;
+    switch (type) {
+      case "addition":
+        this._handleCodeAddition(payload);
+        break;
+    }
   }
 }

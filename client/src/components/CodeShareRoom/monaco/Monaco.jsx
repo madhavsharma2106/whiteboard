@@ -30,9 +30,9 @@ function Monaco({ socket, initialValue, room, username }) {
   };
 
   const initialiseSocketListeners = () => {
-    socket.on(socketEvents.INCOMING_CODE_CHANGE, ({ type, payload }) => {
-      console.log({ type, payload });
-    });
+    socket.on(socketEvents.INCOMING_CODE_CHANGE, (data) =>
+      editor.handleIncomingCodeChangeEvent(data)
+    );
   };
 
   useEffect(() => {
