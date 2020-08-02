@@ -4,7 +4,10 @@ const app = express();
 const cors = require("cors");
 const http = require("http").Server(app);
 const io = require("socket.io")(http);
+
 const { addUser, removeUser, getUsersInRoom } = require("./users");
+const { RoomTypes, initialValue } = require("./utils");
+const { codeShareRooms } = require("./codeShare");
 
 const port = process.env.PORT || 9009;
 
@@ -29,10 +32,12 @@ function onConnection(socket) {
    * 4. Send message to everyone that the user has joined.
    */
   const onJoin = ({ name, room, roomType }, callback) => {
+    const roomName = `${room}-${roomType}`;
+
     const { error, user } = addUser({
       id: socket.id,
       name,
-      room: `${room}-${roomType}`,
+      room: roomName,
       roomType,
     });
 
@@ -60,6 +65,18 @@ function onConnection(socket) {
       users: getUsersInRoom(user.room, roomType),
     });
 
+    // Onboarding procedure for a codeshare sesssion
+    if (roomType === RoomTypes.codeShareRoom) {
+      io.emit("codeChange", {
+        type: "initialValue",
+        payload: initialValue.split("\n"),
+      });
+
+      if (!codeShareRooms[`${room}-codeShareRoom`]) {
+        codeShareRooms[`${room}-codeShareRoom`] = initialValue.split("\n");
+      }
+    }
+
     // Need to send an empty message in the portal. Dont really know why yet.
     callback();
   };
@@ -72,9 +89,12 @@ function onConnection(socket) {
    * 3. Emit a message to room with rooom data.
    */
 
-  const onDisconnect = ({ roomType }) => {
+  const onDisconnect = () => {
+    // Currently look through both codeShareRooms and whiteBoardArrays and remove the user.
+    // Should optimise later.
+
     // Remove user from the room using his socket ID
-    const user = removeUser(socket.id, roomType);
+    const user = removeUser(socket.id);
 
     if (user) {
       // Send message to the entier room
@@ -86,7 +106,7 @@ function onConnection(socket) {
       // Update room data.
       io.to(user.room).emit("roomData", {
         room: user.room,
-        users: getUsersInRoom(user.room),
+        users: getUsersInRoom(user.room, user.roomType),
       });
     }
   };
@@ -101,9 +121,24 @@ function onConnection(socket) {
     socket.broadcast.to(data.room).emit("drawing", data);
   };
 
+  const onValueChange = ({ lineNumber, text, room, column }) => {
+    room = `${room}-${RoomTypes.codeShareRoom}`;
+
+    // Adding text to the editor
+    const line = codeShareRooms[room][lineNumber];
+    const updatedLine = line.slice(0, column) + text + line.slice(column);
+    codeShareRooms[room][lineNumber] = updatedLine;
+    console.log(room);
+    socket.broadcast.to(room).emit("valueChange1", {
+      lineNumber,
+      updatedLine,
+    });
+    console.log(1);
+  };
+
   socket.on("join", onJoin);
   socket.on("drawing", onDrawing);
-  // socket.on("disconnect", onDisconnect);
+  socket.on("disconnect", onDisconnect);
   socket.on("customDisconnect", onDisconnect);
 }
 

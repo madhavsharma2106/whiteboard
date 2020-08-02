@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ControlledEditor } from "@monaco-editor/react";
-import { initialValue } from "../../../utils";
 import { Editor } from "./Editor";
+import { joinValue } from "../../../utils";
 
 const editorConfig = {
   options: {
@@ -12,31 +12,43 @@ const editorConfig = {
   theme: "dark",
   language: "javascript",
   height: "95vh",
-  value: initialValue,
 };
 
-function Monaco() {
+function Monaco({ socket, initialValue, room, username }) {
   const [isEditorReady, setIsEditorReady] = useState(false);
   const [editor, setEditor] = useState(null);
   const editorRef = useRef(null);
-
+  const [model, setModel] = useState(null);
   function handleEditorDidMount(_, editor) {
     setIsEditorReady(true);
     editorRef.current = editor;
-    setEditor(new Editor(editorRef));
+    setEditor(new Editor(editorRef, socket, room, username));
   }
 
-  const initialiseListeners = () => {};
+  const initialiseMonacoListeners = () => {
+    editor.onValueChange();
+  };
+
+  const initialiseSocketListeners = () => {
+    socket.on("valueChange1", ({ lineNumber, updatedLine }) => {
+      console.log({ lineNumber, updatedLine });
+    });
+  };
 
   useEffect(() => {
     if (editorRef && isEditorReady) {
-      initialiseListeners();
+      initialiseMonacoListeners();
+      initialiseSocketListeners();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editorRef, isEditorReady]);
 
   return (
-    <ControlledEditor editorDidMount={handleEditorDidMount} {...editorConfig} />
+    <ControlledEditor
+      editorDidMount={handleEditorDidMount}
+      value={initialValue ? joinValue(initialValue) : "//Setting it up for you"}
+      {...editorConfig}
+    />
   );
 }
 

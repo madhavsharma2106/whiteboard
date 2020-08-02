@@ -12,6 +12,7 @@ function Room(props) {
   const [username, setUsername] = useState("");
   const [room, setRoom] = useState("");
   const [roomData, setRoomData] = useState();
+  const [initialValue, setInitialValue] = useState([]);
 
   useEffect(() => {
     const { username, room } = queryString.parse(props.location.search);
@@ -48,14 +49,26 @@ function Room(props) {
     });
 
     socket.on(socketEvents.ROOMDATA, (data) => {
+      console.log(data);
       setRoomData(data);
+    });
+
+    socket.on(socketEvents.CODE_CHANGE, (data) => {
+      console.log(data);
+      const { type, payload } = data;
+      if (type === "initialValue") setInitialValue(payload);
     });
   }, []);
 
   return (
     <div className="code-share">
       <InfoBar username={username} room={room} roomData={roomData} />
-      <Monaco />
+      <Monaco
+        socket={socket}
+        initialValue={initialValue}
+        username={username}
+        room={room}
+      />
     </div>
   );
 }

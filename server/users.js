@@ -1,10 +1,7 @@
+const { RoomTypes } = require("./utils");
+
 const whiteBoardUsers = [];
 const codeShareUsers = [];
-
-const RoomTypes = {
-  whiteBoardRoom: "whiteBoardRoom",
-  codeShareRoom: "codeShareRoom",
-};
 
 const addUser = ({ id, name, room, roomType }) => {
   name = name.trim().toLowerCase();
@@ -25,7 +22,7 @@ const addUser = ({ id, name, room, roomType }) => {
   if (!name || !room) return { error: "Username and room are required." };
   if (existingUser) return { error: "Username is taken." };
 
-  const user = { id, name, room };
+  const user = { id, name, room, roomType };
 
   if (roomType === RoomTypes.whiteBoardRoom) {
     whiteBoardUsers.push(user);
@@ -35,14 +32,16 @@ const addUser = ({ id, name, room, roomType }) => {
   return { user };
 };
 
-const removeUser = (id, roomType) => {
-  if (roomType === RoomTypes.whiteBoardRoom) {
-    const index = whiteBoardUsers.findIndex((user) => user.id === id);
-    if (index !== -1) return whiteBoardUsers.splice(index, 1)[0];
+const removeUser = (id) => {
+  let index;
+  index = whiteBoardUsers.findIndex((user) => user.id === id);
+  if (index !== -1) {
+    return whiteBoardUsers.splice(index, 1)[0];
   }
-  if (roomType === RoomTypes.codeShareRoom) {
-    const index = codeShareUsers.findIndex((user) => user.id === id);
-    if (index !== -1) return codeShareUsers.splice(index, 1)[0];
+
+  index = codeShareUsers.findIndex((user) => user.id === id);
+  if (index !== -1) {
+    return codeShareUsers.splice(index, 1)[0];
   }
 };
 

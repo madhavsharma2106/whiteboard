@@ -1,6 +1,11 @@
+import { Socket } from "socket.io-client";
+
 export class Editor {
-  constructor(editor) {
+  constructor(editor, socket, room, username) {
     this.editor = editor.current;
+    this.socket = socket;
+    this.room = room;
+    this.username = username;
   }
 
   _defaultLogger(value) {
@@ -24,8 +29,17 @@ export class Editor {
   /**
    * Listens to value change in the editor
    */
-  onValueChange(cb = this._defaultLogger) {
-    this.editor.onDidChangeModelContent(cb);
+  onValueChange() {
+    this.editor.onDidChangeModelContent((event) => {
+      console.log(event);
+      const { changes } = event;
+      this.socket.emit("valueChange", {
+        lineNumber: changes[0].range.startLineNumber - 1,
+        column: changes[0].range.startColumn - 1,
+        text: changes[0].text,
+        room: this.room,
+      });
+    });
   }
 
   /**
