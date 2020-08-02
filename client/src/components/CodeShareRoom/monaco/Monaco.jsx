@@ -18,7 +18,7 @@ function Monaco({ socket, initialValue, room, username }) {
   const [isEditorReady, setIsEditorReady] = useState(false);
   const [editor, setEditor] = useState(null);
   const editorRef = useRef(null);
-  const [model, setModel] = useState(null);
+
   function handleEditorDidMount(_, editor) {
     setIsEditorReady(true);
     editorRef.current = editor;
@@ -30,7 +30,7 @@ function Monaco({ socket, initialValue, room, username }) {
   };
 
   const initialiseSocketListeners = () => {
-    socket.on("valueChange1", ({ lineNumber, updatedLine }) => {
+    socket.on("valueChange", ({ lineNumber, updatedLine }) => {
       console.log({ lineNumber, updatedLine });
     });
   };
@@ -38,7 +38,7 @@ function Monaco({ socket, initialValue, room, username }) {
   useEffect(() => {
     if (editorRef && isEditorReady) {
       initialiseMonacoListeners();
-      initialiseSocketListeners();
+      // initialiseSocketListeners();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editorRef, isEditorReady]);

@@ -6,8 +6,8 @@ const http = require("http").Server(app);
 const io = require("socket.io")(http);
 
 const { addUser, removeUser, getUsersInRoom } = require("./users");
-const { RoomTypes, initialValue } = require("./utils");
-const { codeShareRooms } = require("./codeShare");
+const { RoomTypes, initialValue, buildRoomName } = require("./utils");
+const { codeShareRooms, addTextToCode } = require("./codeShare");
 
 const port = process.env.PORT || 9009;
 
@@ -32,12 +32,10 @@ function onConnection(socket) {
    * 4. Send message to everyone that the user has joined.
    */
   const onJoin = ({ name, room, roomType }, callback) => {
-    const roomName = `${room}-${roomType}`;
-
     const { error, user } = addUser({
       id: socket.id,
       name,
-      room: roomName,
+      room: buildRoomName(room, roomType),
       roomType,
     });
 
@@ -72,8 +70,8 @@ function onConnection(socket) {
         payload: initialValue.split("\n"),
       });
 
-      if (!codeShareRooms[`${room}-codeShareRoom`]) {
-        codeShareRooms[`${room}-codeShareRoom`] = initialValue.split("\n");
+      if (!codeShareRooms[buildRoomName(room)]) {
+        codeShareRooms[buildRoomName(room)] = initialValue.split("\n");
       }
     }
 
@@ -121,24 +119,23 @@ function onConnection(socket) {
     socket.broadcast.to(data.room).emit("drawing", data);
   };
 
-  const onValueChange = ({ lineNumber, text, room, column }) => {
-    room = `${room}-${RoomTypes.codeShareRoom}`;
+  const onValueChange = (data) => {
+    let { lineNumber, text, room, column } = data;
+    data.room = buildRoomName(room);
 
     // Adding text to the editor
-    const line = codeShareRooms[room][lineNumber];
-    const updatedLine = line.slice(0, column) + text + line.slice(column);
-    codeShareRooms[room][lineNumber] = updatedLine;
-    console.log(room);
-    socket.broadcast.to(room).emit("valueChange1", {
+    addTextToCode(data);
+
+    socket.broadcast.to(room).emit("valueChange", {
       lineNumber,
-      updatedLine,
+      // updatedLine,
     });
-    console.log(1);
   };
 
   socket.on("join", onJoin);
   socket.on("drawing", onDrawing);
   socket.on("disconnect", onDisconnect);
+  socket.on("valueChange", onValueChange);
 }
 
 http.listen(port, () => console.log("listening on port " + port));

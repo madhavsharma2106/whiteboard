@@ -13,6 +13,18 @@ export class Editor {
   }
 
   /**
+   * Emits the data to the event
+   *
+   * @param {string} eventName
+   * @param {object} data
+   */
+
+  emitEvent(eventName, data) {
+    console.log(`${eventName} event fired with data ${JSON.stringify(data)}`);
+    this.socket.emit(eventName, data);
+  }
+
+  /**
    * Listens to events of cursor selection.
    */
   onChangeCursorSelection(cb = this._defaultLogger) {
@@ -33,12 +45,15 @@ export class Editor {
     this.editor.onDidChangeModelContent((event) => {
       console.log(event);
       const { changes } = event;
-      this.socket.emit("valueChange", {
+
+      const data = {
         lineNumber: changes[0].range.startLineNumber - 1,
         column: changes[0].range.startColumn - 1,
         text: changes[0].text,
         room: this.room,
-      });
+      };
+
+      this.emitEvent("valueChange", data);
     });
   }
 

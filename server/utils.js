@@ -24,8 +24,12 @@ serviceWorker.unregister();
 
 const splitValue = initialValue.split("\n");
 
+const buildRoomName = (room, roomType = RoomTypes.codeShareRoom) =>
+  `${room}-${roomType}`;
+
 module.exports = {
   RoomTypes,
   initialValue,
   splitValue,
+  buildRoomName,
 };
