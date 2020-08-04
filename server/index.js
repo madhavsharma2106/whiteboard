@@ -118,7 +118,9 @@ function onConnection(socket) {
    * 1. Send the data to eveyone in the room except the user.
    */
   const onDrawing = (data) => {
-    socket.broadcast.to(data.room).emit("drawing", data);
+    socket.broadcast
+      .to(buildRoomName(data.room, RoomTypes.whiteBoardRoom))
+      .emit("drawing", data);
   };
 
   const registerCodeChange = (data) => {

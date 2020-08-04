@@ -33,7 +33,6 @@ const addUser = ({ id, name, room, roomType }) => {
     codeShareUsers.push(user);
   }
 
-  console.log(user);
   return { user };
 };
 
